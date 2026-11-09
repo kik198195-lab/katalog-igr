@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Каталог интерактивных игр для уроков</title>
+<style>
+  /* ===== НАСТРОЙКА: номер WhatsApp в самом низу, в скрипте (WHATSAPP_NUMBER) ===== */
+  :root{
+    --bg:#f6f3ff; --card:#fff; --ink:#2b2350; --muted:#6f6890;
+    --accent:#7b5cff; --accent2:#ff7ab6; --wa:#25d366; --line:#e6e0ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:110px}
+  header{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:34px 18px 28px;text-align:center}
+  header h1{margin:0 0 8px;font-size:clamp(24px,5vw,38px)}
+  header p{margin:0 auto;max-width:640px;opacity:.95;font-size:16px;line-height:1.45}
+  .steps{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+  .steps span{background:rgba(255,255,255,.2);border-radius:999px;padding:7px 14px;font-size:14px}
+  main{max-width:1100px;margin:0 auto;padding:18px}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0 18px}
+  .controls input{flex:1 1 220px;padding:11px 14px;border:2px solid var(--line);border-radius:12px;font-size:16px;outline:none}
+  .controls input:focus{border-color:var(--accent)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:.15s;position:relative}
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(123,92,255,.15)}
+  .card.sel{border-color:var(--wa);box-shadow:0 0 0 3px rgba(37,211,102,.25)}
+  .emoji{font-size:40px;line-height:1}
+  .card h3{margin:0;font-size:18px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .tag{font-size:12px;background:#f1edff;color:var(--accent);border-radius:8px;padding:3px 8px}
+  .tag.cls{background:#fff0f7;color:#d6417f}
+  .card p{margin:0;color:var(--muted);font-size:14px;line-height:1.4;flex:1}
+  .pick{margin-top:6px;border:none;border-radius:12px;padding:10px;font-size:15px;font-weight:600;cursor:pointer;background:#f1edff;color:var(--accent)}
+  .card.sel .pick{background:var(--wa);color:#fff}
+  .price{font-weight:700;color:var(--ink)}
+  .sub{margin-bottom:18px;background:linear-gradient(135deg,#fff7d6,#ffe9f3);border:2px solid #ffd36b;border-radius:18px;padding:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;cursor:pointer}
+  .sub.sel{border-color:var(--wa);box-shadow:0 0 0 3px rgba(37,211,102,.25)}
+  .sub div{flex:1 1 260px}
+  .sub h3{margin:0 0 4px}
+  .sub p{margin:0;color:var(--muted)}
+  .empty{text-align:center;color:var(--muted);padding:40px 0;display:none}
+  .custom{margin-top:26px;background:#fff;border:2px dashed var(--accent);border-radius:18px;padding:18px;text-align:center}
+  .custom h3{margin:0 0 6px}
+  .custom p{margin:0 0 12px;color:var(--muted)}
+  .custom textarea{width:100%;max-width:640px;min-height:70px;border:2px solid var(--line);border-radius:12px;padding:10px;font:inherit;resize:vertical}
+  footer{text-align:center;color:var(--muted);font-size:14px;padding:26px 10px}
+  footer a{color:var(--accent)}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:2px solid var(--line);padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;box-shadow:0 -6px 20px rgba(0,0,0,.06)}
+  .bar .count{font-size:15px}
+  .bar .count b{color:var(--accent)}
+  .wa{background:var(--wa);color:#fff;border:none;border-radius:14px;padding:13px 22px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .wa:disabled{opacity:.45;cursor:not-allowed}
+  .clear{background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:14px}
+  @media (max-width:600px){
+    header{padding:24px 14px 20px}
+    header p{font-size:15px}
+    main{padding:12px}
+    .chips{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;width:100%}
+    .chip{flex:0 0 auto}
+    .grid{grid-template-columns:1fr 1fr;gap:10px}
+    .card{padding:12px;border-radius:14px}
+    .emoji{font-size:32px}
+    .card h3{font-size:15px}
+    .card p{font-size:13px}
+    .pick{padding:9px;font-size:14px}
+    .bar{padding:10px;gap:8px}
+    .bar .count{width:100%;text-align:center;font-size:14px}
+    .wa{flex:1;justify-content:center;padding:14px}
+    body{padding-bottom:130px}
+  }
+  @media (max-width:360px){ .grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎮 Интерактивные игры для уроков</h1>
+  <p>Игры для начальной школы: математика, русский язык, окружающий мир, праздники и воспитательные часы. Работают на интерактивной доске, компьютере и телефоне без установки.</p>
+  <div class="steps"><span>1. Выберите игры</span><span>2. Нажмите «Заказать в WhatsApp»</span><span>3. Получите игры</span></div>
+</header>
+
+<main>
+  <div class="controls">
+    <input id="q" type="search" placeholder="🔍 Поиск: умножение, слоги, Казахстан…">
+  </div>
+  <div class="controls">
+    <div class="chips" id="subjects"></div>
+  </div>
+  <div class="controls">
+    <div class="chips" id="classes"></div>
+  </div>
+
+  <div class="sub" id="sub">
+    <div><h3>⭐ Все игры сразу: доступ к каналу на 1 год</h3>
+    <p>Все игры из каталога и новые, которые выходят в канале. <b id="subprice"></b></p></div>
+    <button class="pick" id="subbtn">+ Выбрать</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty">Ничего не нашлось 🙈 Попробуйте другой запрос или закажите свою игру ниже.</div>
+
+  <div class="custom">
+    <h3>✨ Нужна своя игра?</h3>
+    <p>Сделаю игру под вашу тему, класс и урок. Опишите идею — она попадёт в сообщение.</p>
+    <textarea id="wish" placeholder="Например: игра на таблицу умножения на 7, 3 класс, с космосом"></textarea>
+  </div>
+</main>
+
+<footer>
+  Разработчик: Курбаниязова Ильмира Климентовна ·
+  <a href="https://instagram.com/dlya.urokov23/" target="_blank" rel="noopener">Instagram @dlya.urokov23</a>
+</footer>
+
+<div class="bar">
+  <span class="count">Выбрано: <b id="n">0</b></span>
+  <button class="clear" id="clear">очистить</button>
+  <button class="wa" id="send" disabled>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.6-.3z"/></svg>
+    Заказать в WhatsApp
+  </button>
+</div>
+
+<script>
+/* ===== НАСТРОЙКА ===== */
+// Номер WhatsApp в международном формате, только цифры, без + и пробелов. Пример: 77011234567
+const WHATSAPP_NUMBER = "77767850525";
+const PRICE_KZT = 1590, PRICE_RUB = 350;            // цена одной игры
+const CHANNEL_KZT = 10000, CHANNEL_RUB = 2150;      // доступ к каналу со всеми играми на 1 год
+const fmt = n => n.toLocaleString("ru-RU");
+
+/* ===== КАТАЛОГ (ссылок на игры здесь нет — только описание) ===== */
+const GAMES = [
+  // 1 класс
+  {e:"🚂", name:"Буквенное путешествие", subject:"Русский язык", cls:"1", desc:"Путешествие по буквам для первоклассников."},
+  {e:"🏙️", name:"Город звуков", subject:"Русский язык", cls:"1", desc:"Звуки и буквы: гласные, согласные, звуковые схемы."},
+  {e:"🍂", name:"Листопад слогов", subject:"Русский язык", cls:"1", desc:"Собираем слова из слогов на падающих листьях."},
+  {e:"🍒", name:"Состав числа — Вишнёвый сад", subject:"Математика", cls:"1", desc:"Состав числа на вишенках: разложи число на части."},
+  {e:"🔢", name:"Состав числа: до 10, до 20, с переходом", subject:"Математика", cls:"1", desc:"Три уровня: состав чисел до 10, до 20 и с переходом через десяток."},
+  {e:"🏘️", name:"Цифроград — учим цифры", subject:"Математика", cls:"1", desc:"Знакомство с цифрами и счётом в городе цифр."},
+  {e:"🧮", name:"Переход через десяток со счётами", subject:"Математика", cls:"1–2", desc:"Сложение и вычитание с переходом через десяток на счётах."},
+  {e:"🔟", name:"Тренажёр примеров", subject:"Математика", cls:"1–2", desc:"Примеры на переход через десяток."},
+  {e:"📏", name:"Тренажёр по величинам", subject:"Математика", cls:"1", desc:"Длина, масса, сравнение величин для 1 класса."},
+  // Математика 2–4
+  {e:"🦸‍♂️", name:"Супергеройский баттл", subject:"Математика", cls:"2–4", desc:"Битва героев на таблицу умножения."},
+  {e:"🏎️", name:"Гонки", subject:"Математика", cls:"2–4", desc:"Гонка на скорость: таблица умножения и деления."},
+  {e:"🕷️", name:"Человек-паук: спаси Нью-Йорк", subject:"Математика", cls:"2–4", desc:"Таблица умножения, игра для двух команд."},
+  {e:"🪢", name:"Перетягивание каната: умножение и деление", subject:"Математика", cls:"2–4", desc:"Две команды решают примеры на умножение и деление."},
+  {e:"🪢", name:"Перетягивание каната: счёт до 100", subject:"Математика", cls:"1–2", desc:"Сложение и вычитание в пределах 100, соревнование у доски."},
+  {e:"🏁", name:"Көбейту мен бөлу кестесі — Жарыс", subject:"Математика", cls:"2–4", desc:"Таблица умножения и деления на казахском языке."},
+  {e:"💎", name:"Сокровища Аладдина", subject:"Математика", cls:"2–3", desc:"Сложение и вычитание: собери сокровища."},
+  {e:"🐧", name:"Пингвины-лыжники: в столбик", subject:"Математика", cls:"2–4", desc:"Сложение и вычитание в столбик."},
+  {e:"🍕", name:"Найди рисунок по дроби", subject:"Математика", cls:"3–4", desc:"Доли и дроби: найди подходящий рисунок."},
+  {e:"⚔️", name:"Математическая битва", subject:"Математика", cls:"2–4", desc:"Командная битва на устный счёт."},
+  {e:"🧊", name:"Математическая тетрадь, куб", subject:"Математика", cls:"2–4", desc:"Интерактивная тетрадь с заданиями-кубиками."},
+  {e:"📐", name:"Задачи 3–4 класс: периметр, площадь, движение", subject:"Математика", cls:"3–4", desc:"Тренажёр текстовых задач."},
+  {e:"➗", name:"Математические действия", subject:"Математика", cls:"2–4", desc:"Тренажёр четырёх арифметических действий."},
+  // Русский язык 2–4
+  {e:"🔍", name:"Фонетика: разбери слово", subject:"Русский язык", cls:"2–4", desc:"Фонетический разбор слова шаг за шагом."},
+  {e:"🔊", name:"Звуковички", subject:"Русский язык", cls:"1–2", desc:"Фонетический разбор: твёрдые и мягкие, звонкие и глухие."},
+  {e:"⚪", name:"Фонетика с кружочками", subject:"Русский язык", cls:"1–2", desc:"Звуковые схемы цветными кружочками."},
+  {e:"✂️", name:"Слоги и ударение", subject:"Русский язык", cls:"1–3", desc:"Деление на слоги, перенос слов, ударение."},
+  {e:"🚀", name:"Космическая битва", subject:"Русский язык", cls:"2–4", desc:"Части речи: космическое сражение."},
+  {e:"📚", name:"Части речи 2", subject:"Русский язык", cls:"2–4", desc:"Определи часть речи: существительное, глагол, прилагательное."},
+  {e:"🐠", name:"Подводный мир", subject:"Русский язык", cls:"2–4", desc:"Части речи в подводном мире."},
+  {e:"🌲", name:"Сказочный лес", subject:"Русский язык", cls:"2–3", desc:"Род имён существительных."},
+  {e:"🍿", name:"Попкорн", subject:"Русский язык", cls:"2–3", desc:"Род существительных: разложи попкорн по стаканам."},
+  {e:"🗝️", name:"Падежный квест", subject:"Русский язык", cls:"3–4", desc:"Квест по падежам имён существительных."},
+  {e:"❄️", name:"Пингвины и снежки: падежи", subject:"Русский язык", cls:"3–4", desc:"Определи падеж — брось снежок."},
+  {e:"🐿️", name:"Склонение: белочка и сундуки", subject:"Русский язык", cls:"3–4", desc:"Разложи слова по склонениям."},
+  {e:"📋", name:"Доска для склонения", subject:"Русский язык", cls:"3–4", desc:"Склонение существительных по падежам на доске."},
+  {e:"✍️", name:"Орфографический тренажёр", subject:"Русский язык", cls:"2–4", desc:"Безударные гласные, парные согласные и другие орфограммы."},
+  {e:"🧪", name:"Морфемная лаборатория", subject:"Русский язык", cls:"3–4", desc:"Состав слова: корень, приставка, суффикс, окончание."},
+  // Казахский язык
+  {e:"🗣️", name:"Дыбыстық талдау", subject:"Казахский язык", cls:"1–4", desc:"Звуковой анализ слова на казахском языке."},
+  {e:"🤖", name:"TIL-BOT — Сөз әлемі", subject:"Казахский язык", cls:"1–4", desc:"Мир слов: словарная игра на казахском языке."},
+  // Окружающий мир
+  {e:"🧭", name:"Стороны горизонта", subject:"Окружающий мир", cls:"2–3", desc:"Ориентирование: север, юг, запад, восток."},
+  {e:"🐻‍❄️", name:"Экспедиция в Арктику", subject:"Окружающий мир", cls:"4", desc:"3D-игра: зона арктических пустынь."},
+  // Казахстан и праздники
+  {e:"🇰🇿", name:"День Республики", subject:"Казахстан и праздники", cls:"1–4", desc:"Игра ко Дню Республики."},
+  {e:"🎉", name:"Республика күні", subject:"Казахстан и праздники", cls:"1–4", desc:"Республика күніне арналған ойын (на казахском)."},
+  {e:"🎨", name:"Оживи свой Казахстан", subject:"Казахстан и праздники", cls:"1–4", desc:"Живая раскраска: символы и праздники Казахстана."},
+  {e:"🏔️", name:"Символы КЗ, Собери Картау", subject:"Казахстан и праздники", cls:"1–4", desc:"Государственные символы и карта Казахстана."},
+  // Воспитание и рефлексия
+  {e:"🦊", name:"Рефлексия «Зверополис»", subject:"Воспитание и рефлексия", cls:"1–4", desc:"Рефлексия в конце урока."},
+  {e:"✨", name:"Рефлексия с ИИ", subject:"Воспитание и рефлексия", cls:"1–4", desc:"Рефлексия урока с ИИ-помощником."},
+  {e:"✅", name:"Формативное оценивание", subject:"Воспитание и рефлексия", cls:"1–4", desc:"Быстрое формативное оценивание на уроке."},
+  {e:"🖼️", name:"Презентации-рефлексии", subject:"Воспитание и рефлексия", cls:"1–4", desc:"Набор из 3 презентаций для рефлексии."},
+  // Для учителя
+  {e:"⏳", name:"Волшебный таймер", subject:"Для учителя", cls:"любой", desc:"Картинки исчезают каждую секунду, 11 тем."},
+  {e:"📒", name:"Классный журнал посещаемости", subject:"Для учителя", cls:"любой", desc:"Интерактивный журнал посещаемости класса."},
+];
+
+/* ===== ЛОГИКА ===== */
+const picked = new Set();
+let channel = false;
+let subj = "Все", cls = "Все";
+const $ = id => document.getElementById(id);
+
+function chips(el, items, get, set){
+  el.innerHTML = "";
+  items.forEach(v=>{
+    const b = document.createElement("button");
+    b.className = "chip" + (get()===v ? " on" : "");
+    b.textContent = v;
+    b.onclick = ()=>{ set(v); chips(el, items, get, set); render(); };
+    el.appendChild(b);
+  });
+}
+const subjects = ["Все", ...new Set(GAMES.map(g=>g.subject))];
+const classes = ["Все","1 класс","2 класс","3 класс","4 класс"];
+chips($("subjects"), subjects, ()=>subj, v=>subj=v);
+chips($("classes"), classes, ()=>cls, v=>cls=v);
+
+function fitsClass(g){
+  if(cls==="Все" || g.cls==="любой") return true;
+  const n = +cls[0];
+  const [a,b] = g.cls.split("–").map(Number);
+  return n>=a && n<=(b||a);
+}
+
+function render(){
+  const q = $("q").value.trim().toLowerCase();
+  const grid = $("grid"); grid.innerHTML = "";
+  const list = GAMES.filter(g =>
+    (subj==="Все" || g.subject===subj) && fitsClass(g) &&
+    (!q || (g.name+" "+g.desc+" "+g.subject).toLowerCase().includes(q)));
+  list.forEach(g=>{
+    const c = document.createElement("div");
+    c.className = "card" + (picked.has(g.name) ? " sel" : "");
+    c.innerHTML = `<div class="emoji">${g.e}</div><h3>${g.name}</h3>
+      <div class="tags"><span class="tag">${g.subject}</span><span class="tag cls">${g.cls==="любой"?"любой класс":g.cls+" класс"}</span></div>
+      <p>${g.desc}</p><div class="price">${fmt(PRICE_KZT)} ₸ · ${PRICE_RUB} ₽</div>
+      <button class="pick">${picked.has(g.name) ? "✓ Выбрано" : "+ Выбрать"}</button>`;
+    c.onclick = ()=>{ picked.has(g.name) ? picked.delete(g.name) : picked.add(g.name); render(); };
+    grid.appendChild(c);
+  });
+  $("empty").style.display = list.length ? "none" : "block";
+  updateBar();
+}
+
+function updateBar(){
+  $("sub").classList.toggle("sel", channel);
+  $("subbtn").textContent = channel ? "✓ Выбрано" : "+ Выбрать";
+  const k = picked.size;
+  $("n").textContent = channel ? "доступ к каналу" + (k ? " + " + k : "") : k + (k ? " · " + fmt(k*PRICE_KZT) + " ₸ / " + fmt(k*PRICE_RUB) + " ₽" : "");
+  $("send").disabled = !k && !channel && !$("wish").value.trim();
+}
+$("subprice").textContent = fmt(CHANNEL_KZT) + " ₸ · " + fmt(CHANNEL_RUB) + " ₽";
+$("sub").onclick = ()=>{ channel = !channel; updateBar(); };
+
+$("q").oninput = render;
+$("wish").oninput = updateBar;
+$("clear").onclick = ()=>{ picked.clear(); channel = false; $("wish").value=""; render(); };
+
+$("send").onclick = ()=>{
+  const lines = ["Здравствуйте! Хочу заказать из каталога:"];
+  if(channel) lines.push("⭐ Доступ к каналу со всеми играми на 1 год — " + fmt(CHANNEL_KZT) + " ₸ / " + fmt(CHANNEL_RUB) + " ₽");
+  [...picked].forEach((name,i)=>{
+    const g = GAMES.find(x=>x.name===name);
+    lines.push(`${i+1}. ${g.name} (${g.subject}, ${g.cls==="любой"?"любой класс":g.cls+" кл."})`);
+  });
+  if(picked.size) lines.push("Итого за " + picked.size + " игр(ы): " + fmt(picked.size*PRICE_KZT) + " ₸ / " + fmt(picked.size*PRICE_RUB) + " ₽");
+  const wish = $("wish").value.trim();
+  if(wish) lines.push("", "Хочу свою игру: " + wish);
+  const text = encodeURIComponent(lines.join("\n"));
+  const url = WHATSAPP_NUMBER ? `https://wa.me/${WHATSAPP_NUMBER}?text=${text}` : `https://wa.me/?text=${text}`;
+  location.href = url;
+};
+
+render();
+</script>
+</body>
+</html>
