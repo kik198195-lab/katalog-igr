@@ -135,6 +135,10 @@
 const WHATSAPP_NUMBER = "77767850525";
 // цены: ₸ (Казахстан), ₽ (Россия), сум (Узбекистан), сом (Кыргызстан)
 const GAME = {kzt:1590, rub:350, uzs:46000, kgs:340};          // одна игра
+const TRAINER = {kzt:2490, rub:550, uzs:73000, kgs:540};       // тренажёр (список ниже)
+const TRAINERS = ["Морфемная лаборатория", "Фонетика: разбери слово", "Слоги и ударение"];
+const priceOf = g => TRAINERS.includes(g.name) ? TRAINER : GAME;
+const sumOf = names => names.reduce((t,n)=>{const p=priceOf(GAMES.find(x=>x.name===n));for(const k in t)t[k]+=p[k];return t},{kzt:0,rub:0,uzs:0,kgs:0});
 const CHANNEL = {kzt:12000, rub:2600, uzs:355000, kgs:2600};  // канал со всеми играми, доступ до 31.08.2027
 const fmt = n => n.toLocaleString("ru-RU");
 const money = (p, k=1, sep=" · ") => [fmt(p.kzt*k)+" ₸", fmt(p.rub*k)+" ₽", fmt(p.uzs*k)+" сум", fmt(p.kgs*k)+" сом"].join(sep);
@@ -240,7 +244,7 @@ function render(){
     const ig = IG[g.name];
     c.innerHTML = (ig ? `<div class="shot"><img src="img/${ig}.jpg" alt="${g.name}" loading="lazy"><span class="em">${g.e}</span></div>` : `<div class="emoji">${g.e}</div>`) + `<h3>${g.name}</h3>
       <div class="tags"><span class="tag">${g.subject}</span><span class="tag cls">${g.cls==="любой"?"любой класс":g.cls+" класс"}</span></div>
-      <p>${g.desc}</p>${ig ? `<a class="video" href="https://www.instagram.com/p/${ig}/" target="_blank" rel="noopener">▶ Смотреть видео</a>` : ""}<div class="price">${money(GAME)}</div>
+      <p>${g.desc}</p>${ig ? `<a class="video" href="https://www.instagram.com/p/${ig}/" target="_blank" rel="noopener">▶ Смотреть видео</a>` : ""}<div class="price">${money(priceOf(g))}</div>
       <button class="pick">${picked.has(g.name) ? "✓ Выбрано" : "+ Выбрать"}</button>`;
     c.onclick = e=>{ if(e.target.closest('.video')) return; picked.has(g.name) ? picked.delete(g.name) : picked.add(g.name); render(); };
     grid.appendChild(c);
@@ -253,7 +257,7 @@ function updateBar(){
   $("sub").classList.toggle("sel", channel);
   $("subbtn").textContent = channel ? "✓ Выбрано" : "+ Выбрать";
   const k = picked.size;
-  $("n").textContent = channel ? "доступ к каналу" + (k ? " + " + k : "") : k + (k ? " · " + fmt(k*GAME.kzt) + " ₸ / " + fmt(k*GAME.rub) + " ₽" : "");
+  $("n").textContent = channel ? "доступ к каналу" + (k ? " + " + k : "") : k + (k ? " · " + fmt(sumOf([...picked]).kzt) + " ₸ / " + fmt(sumOf([...picked]).rub) + " ₽" : "");
   $("send").disabled = !k && !channel && !$("wish").value.trim();
 }
 $("subprice").textContent = money(CHANNEL);
@@ -270,7 +274,7 @@ $("send").onclick = ()=>{
     const g = GAMES.find(x=>x.name===name);
     lines.push(`${i+1}. ${g.name} (${g.subject}, ${g.cls==="любой"?"любой класс":g.cls+" кл."})`);
   });
-  if(picked.size) lines.push("Итого за " + picked.size + " игр(ы): " + money(GAME, picked.size, " / "));
+  if(picked.size) lines.push("Итого за " + picked.size + " игр(ы): " + money(sumOf([...picked]), 1, " / "));
   const wish = $("wish").value.trim();
   if(wish) lines.push("", "Хочу свою игру: " + wish);
   const text = encodeURIComponent(lines.join("\n"));
