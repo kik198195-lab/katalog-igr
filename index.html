@@ -137,8 +137,11 @@ const WHATSAPP_NUMBER = "77767850525";
 // цены: ₸ (Казахстан), ₽ (Россия), сум (Узбекистан), сом (Кыргызстан)
 const GAME = {kzt:1590, rub:350, uzs:46000, kgs:340};          // одна игра
 const TRAINER = {kzt:2490, rub:550, uzs:73000, kgs:540};       // тренажёр (список ниже)
-const TRAINERS = ["Морфемная лаборатория", "Фонетика: разбери слово", "Слоги и ударение"];
-const priceOf = g => TRAINERS.includes(g.name) ? TRAINER : GAME;
+// метка «🧩 Тренажёр» на карточке
+const TRAINERS = ["Морфемная лаборатория", "Фонетика: разбери слово", "Слоги и ударение", "Доска для склонения", "Орфографический тренажёр"];
+// цена 2490 ₸: тренажёры + эти игры
+const PRICE_2490 = [...TRAINERS, "Оживи свой Казахстан", "Формативное оценивание"];
+const priceOf = g => PRICE_2490.includes(g.name) ? TRAINER : GAME;
 const sumOf = names => names.reduce((t,n)=>{const p=priceOf(GAMES.find(x=>x.name===n));for(const k in t)t[k]+=p[k];return t},{kzt:0,rub:0,uzs:0,kgs:0});
 const CHANNEL = {kzt:12000, rub:2600, uzs:355000, kgs:2600};  // канал со всеми играми, доступ до 31.08.2027
 const fmt = n => n.toLocaleString("ru-RU");
