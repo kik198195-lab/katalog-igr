@@ -38,6 +38,7 @@
   .tags{display:flex;flex-wrap:wrap;gap:6px}
   .tag{font-size:12px;background:#f1edff;color:var(--accent);border-radius:8px;padding:3px 8px}
   .tag.cls{background:#fff0f7;color:#d6417f}
+  .tag.tr{background:#fff3c4;color:#9a6a00;font-weight:700}
   .card p{margin:0;color:var(--muted);font-size:14px;line-height:1.4;flex:1}
   .pick{margin-top:6px;border:none;border-radius:12px;padding:10px;font-size:15px;font-weight:600;cursor:pointer;background:#f1edff;color:var(--accent)}
   .card.sel .pick{background:var(--wa);color:#fff}
@@ -149,8 +150,8 @@ const IG = {
   "Цифроград — учим цифры":"DeXcgzpNg0S", "Переход через десяток со счётами":"DedQh1YoLHK", "Гонки (усовершенствованная)":"DW8q_qTjSTL",
   "Человек-паук: спаси Нью-Йорк":"DeZKOc9NlC2", "Перетягивание каната: умножение и деление":"DfXWEMItm51",
   "Город звуков":"DfAe9CGt-Wb", "Состав числа: до 10, до 20, с переходом":"DeLzUhwtDDo", "Попкорн":"De9JLzvNTGE", "Найди рисунок по дроби":"DfPGTudtjL8",
-  "Пингвины-лыжники: в столбик":"Dfeoh1JtlFW", "Фонетика: разбери слово":"DeHKzsiNiFi", "Звуковички":"DepEbV5NQvA",
-  "Фонетика с кружочками":"DfMHbPgtGfT", "Слоги и ударение":"DfhUTV7N1mS", "Падежный квест":"DeYpA-NNSAD",
+  "Пингвины-лыжники: в столбик":"Dfeoh1JtlFW", "Фонетика: разбери слово":"DfMHbPgtGfT", "Звуковички":"DepEbV5NQvA",
+  "Фонетика с кружочками":"DeHKzsiNiFi", "Слоги и ударение":"DfhUTV7N1mS", "Падежный квест":"DeYpA-NNSAD",
   "Пингвины и снежки: падежи":"De5v05bIbmQ", "Склонение: белочка и сундуки":"DfUSm64t_bK", "Доска для склонения":"DfYf3U5oPCG",
   "Орфографический тренажёр":"DfZLrBFtbaL", "Морфемная лаборатория":"Dfb2OknNWNC", "Дыбыстық талдау":"DeMyTAINjFZ",
   "Экспедиция в Арктику":"Dfe4eXTt3hr", "День Республики":"DeoXb_xtbZH", "Республика күні":"Demw4_QNvKy",
@@ -243,7 +244,7 @@ function render(){
     c.className = "card" + (picked.has(g.name) ? " sel" : "");
     const ig = IG[g.name];
     c.innerHTML = (ig ? `<div class="shot"><img src="img/${ig}.jpg" alt="${g.name}" loading="lazy"><span class="em">${g.e}</span></div>` : `<div class="emoji">${g.e}</div>`) + `<h3>${g.name}</h3>
-      <div class="tags"><span class="tag">${g.subject}</span><span class="tag cls">${g.cls==="любой"?"любой класс":g.cls+" класс"}</span></div>
+      <div class="tags">${TRAINERS.includes(g.name) ? `<span class="tag tr">🧩 Тренажёр</span>` : ""}<span class="tag">${g.subject}</span><span class="tag cls">${g.cls==="любой"?"любой класс":g.cls+" класс"}</span></div>
       <p>${g.desc}</p>${ig ? `<a class="video" href="https://www.instagram.com/p/${ig}/" target="_blank" rel="noopener">▶ Смотреть видео</a>` : ""}<div class="price">${money(priceOf(g))}</div>
       <button class="pick">${picked.has(g.name) ? "✓ Выбрано" : "+ Выбрать"}</button>`;
     c.onclick = e=>{ if(e.target.closest('.video')) return; picked.has(g.name) ? picked.delete(g.name) : picked.add(g.name); render(); };
@@ -272,7 +273,7 @@ $("send").onclick = ()=>{
   if(channel) lines.push("⭐ Telegram-канал со всеми играми (доступ до 31.08.2027) — " + money(CHANNEL, 1, " / "));
   [...picked].forEach((name,i)=>{
     const g = GAMES.find(x=>x.name===name);
-    lines.push(`${i+1}. ${g.name} (${g.subject}, ${g.cls==="любой"?"любой класс":g.cls+" кл."})`);
+    lines.push(`${i+1}. ${TRAINERS.includes(g.name) ? "Тренажёр " : ""}${g.name} (${g.subject}, ${g.cls==="любой"?"любой класс":g.cls+" кл."})`);
   });
   if(picked.size) lines.push("Итого за " + picked.size + " игр(ы): " + money(sumOf([...picked]), 1, " / "));
   const wish = $("wish").value.trim();
