@@ -141,7 +141,9 @@ const TRAINER = {kzt:2490, rub:550, uzs:73000, kgs:540};       // тренажё
 const TRAINERS = ["Морфемная лаборатория", "Фонетика: разбери слово", "Слоги и ударение", "Доска для склонения", "Орфографический тренажёр", "Орфографиялық тренажер", "Тренажёр «Части речи»", "Читай и догоняй! — скорочтение"];
 // цена 2490 ₸: тренажёры + эти игры
 const PRICE_2490 = [...TRAINERS, "Оживи свой Казахстан", "Формативное оценивание"];
-const priceOf = g => PRICE_2490.includes(g.name) ? TRAINER : GAME;
+const SVOYA = {kzt:3000, rub:660, uzs:87000, kgs:640};         // «Своя игра» + конструктор
+const ALL_SUBJ = "Все предметы";                                 // такая игра показывается в каждом предмете
+const priceOf = g => g.name==="Своя игра — конструктор" ? SVOYA : PRICE_2490.includes(g.name) ? TRAINER : GAME;
 const sumOf = names => names.reduce((t,n)=>{const p=priceOf(GAMES.find(x=>x.name===n));for(const k in t)t[k]+=p[k];return t},{kzt:0,rub:0,uzs:0,kgs:0});
 const CHANNEL = {kzt:12000, rub:2600, uzs:355000, kgs:2600};  // канал со всеми играми, доступ до 31.08.2027
 const fmt = n => n.toLocaleString("ru-RU");
@@ -149,6 +151,7 @@ const money = (p, k=1, sep=" · ") => [fmt(p.kzt*k)+" ₸", fmt(p.rub*k)+" ₽",
 
 /* ===== ВИДЕО В INSTAGRAM: название игры → код поста (instagram.com/p/КОД/), обложка в img/КОД.jpg ===== */
 const IG = {
+  "Своя игра — конструктор":"Dfux2PUN-4a",
   "Математические действия":"Dfm29aEoE-k", "Тренажёр «Части речи»":"Dfn5hOcIUr0", "Читай и догоняй! — скорочтение":"DfqjSbpIL-U",
   "Буквенное путешествие":"DehcES8tmIB", "Листопад слогов":"De1Tm09NDUO", "Состав числа — Вишнёвый сад":"DfMl85-taoU",
   "Цифроград — учим цифры":"DeXcgzpNg0S", "Переход через десяток со счётами":"DedQh1YoLHK", "Гонки (усовершенствованная)":"DW8q_qTjSTL",
@@ -164,6 +167,7 @@ const IG = {
 
 /* ===== КАТАЛОГ (ссылок на игры здесь нет — только описание) ===== */
 const GAMES = [
+  {e:"🎯", name:"Своя игра — конструктор", subject:"Все предметы", cls:"любой", desc:"Готовая «Своя игра» и конструктор: свои вопросы, ответы, картинки. 12 тем оформления, 4 языка (русский, қазақша, o‘zbekcha, кыргызча), кот в мешке, аукцион, таймер, подсчёт баллов."},
   // 1 класс
   {e:"🚂", name:"Буквенное путешествие", subject:"Русский язык", cls:"1", desc:"Путешествие по буквам для первоклассников."},
   {e:"🏙️", name:"Город звуков", subject:"Русский язык", cls:"1", desc:"Звуки и буквы: гласные, согласные, звуковые схемы."},
@@ -227,7 +231,7 @@ function chips(el, items, get, set){
     el.appendChild(b);
   });
 }
-const subjects = ["Все", ...new Set(GAMES.map(g=>g.subject))];
+const subjects = ["Все", ...new Set(GAMES.map(g=>g.subject).filter(s=>s!==ALL_SUBJ))];
 const classes = ["Все","1 класс","2 класс","3 класс","4 класс"];
 chips($("subjects"), subjects, ()=>subj, v=>subj=v);
 chips($("classes"), classes, ()=>cls, v=>cls=v);
@@ -243,7 +247,7 @@ function render(){
   const q = $("q").value.trim().toLowerCase();
   const grid = $("grid"); grid.innerHTML = "";
   const list = GAMES.filter(g =>
-    (subj==="Все" || g.subject===subj) && fitsClass(g) &&
+    (subj==="Все" || g.subject===subj || g.subject===ALL_SUBJ) && fitsClass(g) &&
     (!q || (g.name+" "+g.desc+" "+g.subject).toLowerCase().includes(q)));
   list.forEach(g=>{
     const c = document.createElement("div");
